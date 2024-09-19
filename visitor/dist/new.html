@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Capture and Save</title>
+</head>
+<body>
+
+<h1>Image Capture and Save</h1>
+
+<div>
+  <video id="video" width="400" height="300" autoplay></video>
+  <button id="capture-btn">Capture</button>
+  <button id="retake-btn" style="display:none;">Retake</button>
+  <canvas id="canvas" width="400" height="300" style="display:none;"></canvas>
+  <button id="save-btn" style="display:none;">Save Image</button>
+</div>
+
+<script>
+  // Get the video element
+  const video = document.getElementById('video');
+  // Get the canvas element
+  const canvas = document.getElementById('canvas');
+  // Get the capture button
+  const captureBtn = document.getElementById('capture-btn');
+  // Get the retake button
+  const retakeBtn = document.getElementById('retake-btn');
+  // Get the save button
+  const saveBtn = document.getElementById('save-btn');
+  
+  // Get access to the camera
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+      video.srcObject = stream;
+    })
+    .catch(error => {
+      console.error('Error accessing the camera: ', error);
+    });
+  
+  // Function to capture the image
+  captureBtn.addEventListener('click', () => {
+    // Draw the video frame onto the canvas
+    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+    // Show the retake and save buttons
+    retakeBtn.style.display = 'inline-block';
+    saveBtn.style.display = 'inline-block';
+    // Hide the capture button and video
+    captureBtn.style.display = 'none';
+    video.style.display = 'none';
+  });
+  
+  // Function to retake the image
+  retakeBtn.addEventListener('click', () => {
+    // Clear the canvas
+    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    // Hide the retake and save buttons
+    retakeBtn.style.display = 'none';
+    saveBtn.style.display = 'none';
+    // Show the capture button and video
+    captureBtn.style.display = 'inline-block';
+    video.style.display = 'inline-block';
+  });
+  
+  // Function to save the image
+  saveBtn.addEventListener('click', () => {
+    // Get the data URL of the canvas image
+    const imageDataURL = canvas.toDataURL('image/png');
+    // Send the data URL to the server to save it in the image folder
+    // Here you can use AJAX to send the imageDataURL to the server and save it
+    console.log('Image saved:', imageDataURL);
+    // For demonstration purposes, we'll log the data URL to the console
+    // Reset the canvas
+    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    // Hide the retake and save buttons
+    retakeBtn.style.display = 'none';
+    saveBtn.style.display = 'none';
+    // Show the capture button and video
+    captureBtn.style.display = 'inline-block';
+    video.style.display = 'inline-block';
+  });
+</script>
+
+</body>
+</html>
